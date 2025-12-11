@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useCall } from '@/hooks/useCalls'
 import { format } from 'date-fns'
-import { pl } from 'date-fns/locale'
 import { ArrowLeft, Clock, User, Phone } from 'lucide-react'
 
 function getStatusColor(status: string) {
@@ -25,11 +24,11 @@ function getStatusColor(status: string) {
 function getStatusLabel(status: string) {
   switch (status) {
     case 'completed':
-      return 'Zakończona'
+      return 'Completed'
     case 'missed':
-      return 'Nieodebrana'
+      return 'Missed'
     case 'failed':
-      return 'Błąd'
+      return 'Failed'
     default:
       return status
   }
@@ -38,13 +37,13 @@ function getStatusLabel(status: string) {
 function getMoodLabel(mood: string | null) {
   switch (mood) {
     case 'positive':
-      return 'Pozytywny'
+      return 'Positive'
     case 'neutral':
-      return 'Neutralny'
+      return 'Neutral'
     case 'concerned':
-      return 'Zaniepokojony'
+      return 'Concerned'
     case 'urgent':
-      return 'Pilny'
+      return 'Urgent'
     default:
       return '-'
   }
@@ -57,7 +56,7 @@ export function CallDetail() {
   if (isLoading) {
     return (
       <div className="flex flex-col">
-        <Header title="Ładowanie..." />
+        <Header title="Loading..." />
         <div className="p-6 space-y-6">
           <Skeleton className="h-48 w-full" />
           <Skeleton className="h-64 w-full" />
@@ -69,11 +68,11 @@ export function CallDetail() {
   if (!call) {
     return (
       <div className="flex flex-col">
-        <Header title="Nie znaleziono" />
+        <Header title="Not found" />
         <div className="p-6">
-          <p>Nie znaleziono rozmowy</p>
+          <p>Call not found</p>
           <Button asChild className="mt-4">
-            <Link to="/calls">Wróć do listy</Link>
+            <Link to="/calls">Back to list</Link>
           </Button>
         </div>
       </div>
@@ -82,13 +81,13 @@ export function CallDetail() {
 
   return (
     <div className="flex flex-col">
-      <Header title="Szczegóły rozmowy" />
+      <Header title="Call details" />
 
       <div className="p-6 space-y-6">
         <Button variant="ghost" size="sm" asChild>
           <Link to="/calls">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Wróć do listy
+            Back to list
           </Link>
         </Button>
 
@@ -96,7 +95,7 @@ export function CallDetail() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Informacje o rozmowie</span>
+              <span>Call information</span>
               <Badge className={getStatusColor(call.status)} variant="secondary">
                 {getStatusLabel(call.status)}
               </Badge>
@@ -105,7 +104,7 @@ export function CallDetail() {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <p className="text-sm text-muted-foreground">Podopieczny</p>
+                <p className="text-sm text-muted-foreground">Elderly person</p>
                 <div className="flex items-center gap-2 mt-1">
                   <User className="h-4 w-4 text-muted-foreground" />
                   <Link
@@ -117,18 +116,18 @@ export function CallDetail() {
                 </div>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Data</p>
+                <p className="text-sm text-muted-foreground">Date</p>
                 <div className="flex items-center gap-2 mt-1">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <span>
                     {call.initiated_at
-                      ? format(new Date(call.initiated_at), 'dd MMM yyyy, HH:mm', { locale: pl })
+                      ? format(new Date(call.initiated_at), 'MMM dd yyyy, HH:mm')
                       : '-'}
                   </span>
                 </div>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Czas trwania</p>
+                <p className="text-sm text-muted-foreground">Duration</p>
                 <p className="font-medium mt-1">
                   {call.duration_secs
                     ? `${Math.floor(call.duration_secs / 60)}:${String(call.duration_secs % 60).padStart(2, '0')}`
@@ -136,9 +135,9 @@ export function CallDetail() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Typ</p>
+                <p className="text-sm text-muted-foreground">Type</p>
                 <p className="font-medium mt-1">
-                  {call.call_type === 'scheduled' ? 'Zaplanowana' : 'Ręczna'}
+                  {call.call_type === 'scheduled' ? 'Scheduled' : 'Manual'}
                 </p>
               </div>
             </div>
@@ -149,29 +148,29 @@ export function CallDetail() {
         {call.call_summary && (
           <Card>
             <CardHeader>
-              <CardTitle>Podsumowanie</CardTitle>
+              <CardTitle>Summary</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 <div>
-                  <p className="text-sm text-muted-foreground">Nastrój</p>
+                  <p className="text-sm text-muted-foreground">Mood</p>
                   <p className="font-medium mt-1">{getMoodLabel(call.call_summary.mood_assessment)}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Pilność</p>
-                  <p className="font-medium mt-1">{call.call_summary.urgency_level || 'Normalna'}</p>
+                  <p className="text-sm text-muted-foreground">Urgency</p>
+                  <p className="font-medium mt-1">{call.call_summary.urgency_level || 'Normal'}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Wymaga dalszych działań</p>
+                  <p className="text-sm text-muted-foreground">Requires follow-up</p>
                   <p className="font-medium mt-1">
-                    {call.call_summary.follow_up_required ? 'Tak' : 'Nie'}
+                    {call.call_summary.follow_up_required ? 'Yes' : 'No'}
                   </p>
                 </div>
               </div>
 
               {call.call_summary.transcript_summary && (
                 <div>
-                  <p className="text-sm text-muted-foreground mb-2">Podsumowanie rozmowy</p>
+                  <p className="text-sm text-muted-foreground mb-2">Call summary</p>
                   <p className="bg-muted p-4 rounded-lg">{call.call_summary.transcript_summary}</p>
                 </div>
               )}
@@ -183,7 +182,7 @@ export function CallDetail() {
         {call.elderly_profile && (
           <Card>
             <CardHeader>
-              <CardTitle>Kontakt</CardTitle>
+              <CardTitle>Contact</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center gap-4">
@@ -196,7 +195,7 @@ export function CallDetail() {
                 <Button variant="outline" asChild>
                   <Link to={`/elderly/${call.elderly_profile.id}`}>
                     <User className="mr-2 h-4 w-4" />
-                    Zobacz profil
+                    View profile
                   </Link>
                 </Button>
               </div>

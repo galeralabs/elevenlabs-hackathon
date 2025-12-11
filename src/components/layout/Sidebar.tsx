@@ -10,9 +10,9 @@ import {
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
-  { name: 'Podopieczni', href: '/elderly', icon: Users },
-  { name: 'Rozmowy', href: '/calls', icon: Phone },
-  { name: 'Zgłoszenia', href: '/issues', icon: AlertCircle },
+  { name: 'Elderly', href: '/elderly', icon: Users },
+  { name: 'Calls', href: '/calls', icon: Phone },
+  { name: 'Issues', href: '/issues', icon: AlertCircle },
 ]
 
 export function Sidebar() {

@@ -105,30 +105,30 @@ export function ElderlyForm({
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
-            {initialData ? 'Edytuj podopiecznego' : 'Dodaj podopiecznego'}
+            {initialData ? 'Edit elderly person' : 'Add elderly person'}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
           {/* Basic Info */}
           <div className="space-y-4">
-            <h3 className="font-medium">Dane podstawowe</h3>
+            <h3 className="font-medium">Basic information</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="first_name">Imię *</Label>
+                <Label htmlFor="first_name">First name *</Label>
                 <Input
                   id="first_name"
-                  {...register('first_name', { required: 'Imię jest wymagane' })}
+                  {...register('first_name', { required: 'First name is required' })}
                 />
                 {errors.first_name && (
                   <p className="text-sm text-red-500">{errors.first_name.message}</p>
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="last_name">Nazwisko *</Label>
+                <Label htmlFor="last_name">Last name *</Label>
                 <Input
                   id="last_name"
-                  {...register('last_name', { required: 'Nazwisko jest wymagane' })}
+                  {...register('last_name', { required: 'Last name is required' })}
                 />
                 {errors.last_name && (
                   <p className="text-sm text-red-500">{errors.last_name.message}</p>
@@ -137,15 +137,15 @@ export function ElderlyForm({
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="preferred_name">Preferowane zwracanie się</Label>
+                <Label htmlFor="preferred_name">Preferred name</Label>
                 <Input
                   id="preferred_name"
-                  placeholder="np. Pani Maria"
+                  placeholder="e.g. Mrs. Mary"
                   {...register('preferred_name')}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="date_of_birth">Data urodzenia</Label>
+                <Label htmlFor="date_of_birth">Date of birth</Label>
                 <Input
                   id="date_of_birth"
                   type="date"
@@ -157,24 +157,24 @@ export function ElderlyForm({
 
           {/* Contact Info */}
           <div className="space-y-4">
-            <h3 className="font-medium">Kontakt</h3>
+            <h3 className="font-medium">Contact</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="phone_number">Telefon *</Label>
+                <Label htmlFor="phone_number">Phone *</Label>
                 <Input
                   id="phone_number"
-                  placeholder="+48..."
-                  {...register('phone_number', { required: 'Telefon jest wymagany' })}
+                  placeholder="+1..."
+                  {...register('phone_number', { required: 'Phone is required' })}
                 />
                 {errors.phone_number && (
                   <p className="text-sm text-red-500">{errors.phone_number.message}</p>
                 )}
               </div>
               <div className="space-y-2">
-                <Label htmlFor="secondary_phone">Telefon dodatkowy</Label>
+                <Label htmlFor="secondary_phone">Secondary phone</Label>
                 <Input
                   id="secondary_phone"
-                  placeholder="+48..."
+                  placeholder="+1..."
                   {...register('secondary_phone')}
                 />
               </div>
@@ -191,28 +191,28 @@ export function ElderlyForm({
 
           {/* Address */}
           <div className="space-y-4">
-            <h3 className="font-medium">Adres</h3>
+            <h3 className="font-medium">Address</h3>
             <div className="space-y-2">
-              <Label htmlFor="address_line1">Adres</Label>
+              <Label htmlFor="address_line1">Address</Label>
               <Input
                 id="address_line1"
-                placeholder="ul. Przykładowa 1/2"
+                placeholder="123 Main Street"
                 {...register('address_line1')}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="city">Miasto</Label>
+                <Label htmlFor="city">City</Label>
                 <Input
                   id="city"
                   {...register('city')}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="postal_code">Kod pocztowy</Label>
+                <Label htmlFor="postal_code">ZIP code</Label>
                 <Input
                   id="postal_code"
-                  placeholder="00-000"
+                  placeholder="12345"
                   {...register('postal_code')}
                 />
               </div>
@@ -221,29 +221,29 @@ export function ElderlyForm({
 
           {/* Emergency Contact */}
           <div className="space-y-4">
-            <h3 className="font-medium">Kontakt alarmowy</h3>
+            <h3 className="font-medium">Emergency contact</h3>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="emergency_contact_name">Imię i nazwisko</Label>
+                <Label htmlFor="emergency_contact_name">Full name</Label>
                 <Input
                   id="emergency_contact_name"
                   {...register('emergency_contact_name')}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="emergency_contact_phone">Telefon</Label>
+                <Label htmlFor="emergency_contact_phone">Phone</Label>
                 <Input
                   id="emergency_contact_phone"
-                  placeholder="+48..."
+                  placeholder="+1..."
                   {...register('emergency_contact_phone')}
                 />
               </div>
             </div>
             <div className="space-y-2">
-              <Label htmlFor="emergency_contact_relationship">Relacja</Label>
+              <Label htmlFor="emergency_contact_relationship">Relationship</Label>
               <Input
                 id="emergency_contact_relationship"
-                placeholder="np. córka, syn, sąsiad"
+                placeholder="e.g. daughter, son, neighbor"
                 {...register('emergency_contact_relationship')}
               />
             </div>
@@ -251,20 +251,20 @@ export function ElderlyForm({
 
           {/* Care Notes */}
           <div className="space-y-4">
-            <h3 className="font-medium">Notatki</h3>
+            <h3 className="font-medium">Notes</h3>
             <div className="space-y-2">
-              <Label htmlFor="medical_notes">Notatki medyczne</Label>
+              <Label htmlFor="medical_notes">Medical notes</Label>
               <Textarea
                 id="medical_notes"
-                placeholder="Istotne informacje medyczne..."
+                placeholder="Important medical information..."
                 {...register('medical_notes')}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="care_notes">Notatki o opiece</Label>
+              <Label htmlFor="care_notes">Care notes</Label>
               <Textarea
                 id="care_notes"
-                placeholder="Preferencje, zainteresowania, uwagi..."
+                placeholder="Preferences, interests, remarks..."
                 {...register('care_notes')}
               />
             </div>
@@ -272,10 +272,10 @@ export function ElderlyForm({
 
           {/* Call Settings */}
           <div className="space-y-4">
-            <h3 className="font-medium">Ustawienia rozmów</h3>
+            <h3 className="font-medium">Call settings</h3>
             <div className="grid grid-cols-3 gap-4">
               <div className="space-y-2">
-                <Label htmlFor="preferred_call_time">Preferowana godzina</Label>
+                <Label htmlFor="preferred_call_time">Preferred time</Label>
                 <Input
                   id="preferred_call_time"
                   type="time"
@@ -283,7 +283,7 @@ export function ElderlyForm({
                 />
               </div>
               <div className="space-y-2">
-                <Label>Częstotliwość</Label>
+                <Label>Frequency</Label>
                 <Select
                   value={watch('call_frequency')}
                   onValueChange={(value) => setValue('call_frequency', value)}
@@ -292,9 +292,9 @@ export function ElderlyForm({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="daily">Codziennie</SelectItem>
-                    <SelectItem value="weekly">Co tydzień</SelectItem>
-                    <SelectItem value="biweekly">Co 2 tygodnie</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="biweekly">Every 2 weeks</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -308,8 +308,8 @@ export function ElderlyForm({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="true">Aktywny</SelectItem>
-                    <SelectItem value="false">Nieaktywny</SelectItem>
+                    <SelectItem value="true">Active</SelectItem>
+                    <SelectItem value="false">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -318,10 +318,10 @@ export function ElderlyForm({
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Anuluj
+              Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Zapisywanie...' : 'Zapisz'}
+              {isLoading ? 'Saving...' : 'Save'}
             </Button>
           </div>
         </form>

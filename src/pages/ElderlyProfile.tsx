@@ -14,7 +14,6 @@ import { useElderlyCallHistory } from '@/hooks/useCalls'
 import { useElderlyIssues } from '@/hooks/useIssues'
 import type { ElderlyProfileUpdate } from '@/types'
 import { format, differenceInYears } from 'date-fns'
-import { pl } from 'date-fns/locale'
 import {
   Phone,
   PhoneCall,
@@ -74,9 +73,9 @@ export function ElderlyProfile() {
       await updateMutation.mutateAsync({ id: id!, updates: data })
       setEditOpen(false)
       setSearchParams({})
-      toast.success('Profil został zaktualizowany')
+      toast.success('Profile has been updated')
     } catch {
-      toast.error('Nie udało się zaktualizować profilu')
+      toast.error('Failed to update profile')
     }
   }
 
@@ -85,7 +84,7 @@ export function ElderlyProfile() {
   if (profileLoading) {
     return (
       <div className="flex flex-col">
-        <Header title="Ładowanie..." />
+        <Header title="Loading..." />
         <div className="p-6 space-y-6">
           <Skeleton className="h-48 w-full" />
           <Skeleton className="h-64 w-full" />
@@ -97,11 +96,11 @@ export function ElderlyProfile() {
   if (!profile) {
     return (
       <div className="flex flex-col">
-        <Header title="Nie znaleziono" />
+        <Header title="Not found" />
         <div className="p-6">
-          <p>Nie znaleziono podopiecznego</p>
+          <p>Elderly person not found</p>
           <Button asChild className="mt-4">
-            <Link to="/elderly">Wróć do listy</Link>
+            <Link to="/elderly">Back to list</Link>
           </Button>
         </div>
       </div>
@@ -117,7 +116,7 @@ export function ElderlyProfile() {
       <Header
         title={`${profile.first_name} ${profile.last_name}`}
         action={{
-          label: 'Edytuj',
+          label: 'Edit',
           onClick: () => setEditOpen(true),
         }}
       />
@@ -127,7 +126,7 @@ export function ElderlyProfile() {
         <Button variant="ghost" size="sm" asChild>
           <Link to="/elderly">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Wróć do listy
+            Back to list
           </Link>
         </Button>
 
@@ -146,12 +145,12 @@ export function ElderlyProfile() {
                     {profile.preferred_name || `${profile.first_name} ${profile.last_name}`}
                   </h2>
                   <Badge variant={profile.is_active ? 'default' : 'secondary'}>
-                    {profile.is_active ? 'Aktywny' : 'Nieaktywny'}
+                    {profile.is_active ? 'Active' : 'Inactive'}
                   </Badge>
                 </div>
                 {age && (
                   <p className="text-muted-foreground mt-1">
-                    {age} lat
+                    {age} years old
                   </p>
                 )}
                 <div className="flex flex-wrap gap-4 mt-4">
@@ -177,18 +176,18 @@ export function ElderlyProfile() {
                   )}
                   <div className="flex items-center gap-2 text-sm">
                     <Clock className="h-4 w-4 text-muted-foreground" />
-                    Rozmowy: {profile.preferred_call_time?.slice(0, 5)}
+                    Calls: {profile.preferred_call_time?.slice(0, 5)}
                   </div>
                 </div>
               </div>
               <div className="flex gap-2">
                 <Button onClick={() => setCallOpen(true)} size="sm">
                   <PhoneCall className="h-4 w-4 mr-2" />
-                  Zadzwoń
+                  Call
                 </Button>
                 <Button onClick={() => setEditOpen(true)} variant="outline" size="sm">
                   <Pencil className="h-4 w-4 mr-2" />
-                  Edytuj
+                  Edit
                 </Button>
               </div>
             </div>
@@ -201,7 +200,7 @@ export function ElderlyProfile() {
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
                 <AlertCircle className="h-4 w-4" />
-                Kontakt alarmowy
+                Emergency contact
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -232,15 +231,15 @@ export function ElderlyProfile() {
           <TabsList>
             <TabsTrigger value="info">
               <User className="h-4 w-4 mr-2" />
-              Informacje
+              Information
             </TabsTrigger>
             <TabsTrigger value="calls">
               <Phone className="h-4 w-4 mr-2" />
-              Rozmowy ({calls?.length ?? 0})
+              Calls ({calls?.length ?? 0})
             </TabsTrigger>
             <TabsTrigger value="issues">
               <AlertCircle className="h-4 w-4 mr-2" />
-              Zgłoszenia ({openIssuesCount})
+              Issues ({openIssuesCount})
             </TabsTrigger>
           </TabsList>
 
@@ -250,7 +249,7 @@ export function ElderlyProfile() {
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
                     <Heart className="h-4 w-4" />
-                    Notatki medyczne
+                    Medical notes
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -264,7 +263,7 @@ export function ElderlyProfile() {
                 <CardHeader>
                   <CardTitle className="text-base flex items-center gap-2">
                     <FileText className="h-4 w-4" />
-                    Notatki o opiece
+                    Care notes
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -275,7 +274,7 @@ export function ElderlyProfile() {
 
             {!profile.medical_notes && !profile.care_notes && (
               <p className="text-muted-foreground text-center py-8">
-                Brak dodatkowych notatek
+                No additional notes
               </p>
             )}
           </TabsContent>
@@ -296,9 +295,9 @@ export function ElderlyProfile() {
                         <div>
                           <div className="flex items-center gap-2">
                             <Badge className={getStatusColor(call.status)} variant="secondary">
-                              {call.status === 'completed' ? 'Zakończona' :
-                               call.status === 'missed' ? 'Nieodebrana' :
-                               call.status === 'failed' ? 'Błąd' : call.status}
+                              {call.status === 'completed' ? 'Completed' :
+                               call.status === 'missed' ? 'Missed' :
+                               call.status === 'failed' ? 'Failed' : call.status}
                             </Badge>
                             {call.duration_secs && (
                               <span className="text-sm text-muted-foreground">
@@ -315,7 +314,7 @@ export function ElderlyProfile() {
                         <div className="text-right">
                           {call.initiated_at && (
                             <p className="text-sm text-muted-foreground">
-                              {format(new Date(call.initiated_at), 'dd MMM yyyy, HH:mm', { locale: pl })}
+                              {format(new Date(call.initiated_at), 'MMM dd yyyy, HH:mm')}
                             </p>
                           )}
                         </div>
@@ -326,7 +325,7 @@ export function ElderlyProfile() {
               </div>
             ) : (
               <p className="text-muted-foreground text-center py-8">
-                Brak historii rozmów
+                No call history
               </p>
             )}
           </TabsContent>
@@ -347,14 +346,14 @@ export function ElderlyProfile() {
                         <div>
                           <div className="flex items-center gap-2">
                             <Badge className={getPriorityColor(issue.priority)}>
-                              {issue.priority === 'urgent' ? 'Pilne' :
-                               issue.priority === 'high' ? 'Wysokie' :
-                               issue.priority === 'normal' ? 'Normalne' : 'Niskie'}
+                              {issue.priority === 'urgent' ? 'Urgent' :
+                               issue.priority === 'high' ? 'High' :
+                               issue.priority === 'normal' ? 'Normal' : 'Low'}
                             </Badge>
                             <Badge variant="outline">
-                              {issue.status === 'open' ? 'Otwarte' :
-                               issue.status === 'in_progress' ? 'W trakcie' :
-                               issue.status === 'resolved' ? 'Rozwiązane' : 'Odrzucone'}
+                              {issue.status === 'open' ? 'Open' :
+                               issue.status === 'in_progress' ? 'In progress' :
+                               issue.status === 'resolved' ? 'Resolved' : 'Dismissed'}
                             </Badge>
                           </div>
                           <p className="font-medium mt-2">{issue.title}</p>
@@ -366,7 +365,7 @@ export function ElderlyProfile() {
                         </div>
                         <div className="text-right">
                           <p className="text-sm text-muted-foreground">
-                            {format(new Date(issue.created_at), 'dd MMM yyyy', { locale: pl })}
+                            {format(new Date(issue.created_at), 'MMM dd yyyy')}
                           </p>
                         </div>
                       </div>
@@ -376,7 +375,7 @@ export function ElderlyProfile() {
               </div>
             ) : (
               <p className="text-muted-foreground text-center py-8">
-                Brak zgłoszeń
+                No issues
               </p>
             )}
           </TabsContent>

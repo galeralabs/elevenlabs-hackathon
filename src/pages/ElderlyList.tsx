@@ -50,30 +50,30 @@ export function ElderlyList() {
     try {
       await createMutation.mutateAsync(data)
       setFormOpen(false)
-      toast.success('Podopieczny został dodany')
+      toast.success('Elderly person has been added')
     } catch {
-      toast.error('Nie udało się dodać podopiecznego')
+      toast.error('Failed to add elderly person')
     }
   }
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Czy na pewno chcesz usunąć ${name}?`)) return
+    if (!confirm(`Are you sure you want to delete ${name}?`)) return
 
     try {
       await deleteMutation.mutateAsync(id)
-      toast.success('Podopieczny został usunięty')
+      toast.success('Elderly person has been deleted')
     } catch {
-      toast.error('Nie udało się usunąć podopiecznego')
+      toast.error('Failed to delete elderly person')
     }
   }
 
   return (
     <div className="flex flex-col">
       <Header
-        title="Podopieczni"
-        description="Lista osób objętych opieką"
+        title="Elderly"
+        description="List of people under care"
         action={{
-          label: 'Dodaj podopiecznego',
+          label: 'Add elderly',
           onClick: () => setFormOpen(true),
         }}
       />
@@ -84,7 +84,7 @@ export function ElderlyList() {
           <div className="relative flex-1 max-w-sm">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              placeholder="Szukaj po imieniu, nazwisku lub telefonie..."
+              placeholder="Search by first name, last name, or phone..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -97,10 +97,10 @@ export function ElderlyList() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Imię i nazwisko</TableHead>
-                <TableHead>Telefon</TableHead>
-                <TableHead>Miasto</TableHead>
-                <TableHead>Preferowana godzina</TableHead>
+                <TableHead>Name</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>City</TableHead>
+                <TableHead>Preferred time</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="w-[80px]"></TableHead>
               </TableRow>
@@ -138,7 +138,7 @@ export function ElderlyList() {
                     <TableCell>{person.preferred_call_time?.slice(0, 5) || '-'}</TableCell>
                     <TableCell>
                       <Badge variant={person.is_active ? 'default' : 'secondary'}>
-                        {person.is_active ? 'Aktywny' : 'Nieaktywny'}
+                        {person.is_active ? 'Active' : 'Inactive'}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -152,25 +152,25 @@ export function ElderlyList() {
                           <DropdownMenuItem asChild>
                             <Link to={`/elderly/${person.id}`}>
                               <Eye className="mr-2 h-4 w-4" />
-                              Zobacz profil
+                              View profile
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem asChild>
                             <Link to={`/elderly/${person.id}?edit=true`}>
                               <Pencil className="mr-2 h-4 w-4" />
-                              Edytuj
+                              Edit
                             </Link>
                           </DropdownMenuItem>
                           <DropdownMenuItem>
                             <Phone className="mr-2 h-4 w-4" />
-                            Zadzwoń teraz
+                            Call now
                           </DropdownMenuItem>
                           <DropdownMenuItem
                             className="text-red-600"
                             onClick={() => handleDelete(person.id, `${person.first_name} ${person.last_name}`)}
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            Usuń
+                            Delete
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>
@@ -180,7 +180,7 @@ export function ElderlyList() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    {searchQuery ? 'Nie znaleziono pasujących wyników' : 'Brak podopiecznych'}
+                    {searchQuery ? 'No matching results found' : 'No elderly people'}
                   </TableCell>
                 </TableRow>
               )}

@@ -21,7 +21,6 @@ import {
 } from '@/components/ui/table'
 import { useCalls } from '@/hooks/useCalls'
 import { format } from 'date-fns'
-import { pl } from 'date-fns/locale'
 import { Clock, MessageSquare } from 'lucide-react'
 
 function getStatusColor(status: string) {
@@ -44,15 +43,15 @@ function getStatusColor(status: string) {
 function getStatusLabel(status: string) {
   switch (status) {
     case 'completed':
-      return 'Zakończona'
+      return 'Completed'
     case 'missed':
-      return 'Nieodebrana'
+      return 'Missed'
     case 'failed':
-      return 'Błąd'
+      return 'Failed'
     case 'in_progress':
-      return 'W trakcie'
+      return 'In progress'
     case 'scheduled':
-      return 'Zaplanowana'
+      return 'Scheduled'
     default:
       return status
   }
@@ -83,8 +82,8 @@ export function CallHistory() {
   return (
     <div className="flex flex-col">
       <Header
-        title="Historia rozmów"
-        description="Wszystkie rozmowy z podopiecznymi"
+        title="Call history"
+        description="All calls with elderly people"
       />
 
       <div className="p-6">
@@ -95,11 +94,11 @@ export function CallHistory() {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Wszystkie</SelectItem>
-              <SelectItem value="completed">Zakończone</SelectItem>
-              <SelectItem value="missed">Nieodebrane</SelectItem>
-              <SelectItem value="failed">Błędy</SelectItem>
-              <SelectItem value="scheduled">Zaplanowane</SelectItem>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="completed">Completed</SelectItem>
+              <SelectItem value="missed">Missed</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="scheduled">Scheduled</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -109,11 +108,11 @@ export function CallHistory() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Podopieczny</TableHead>
-                <TableHead>Data i czas</TableHead>
+                <TableHead>Elderly person</TableHead>
+                <TableHead>Date & time</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Czas trwania</TableHead>
-                <TableHead>Podsumowanie</TableHead>
+                <TableHead>Duration</TableHead>
+                <TableHead>Summary</TableHead>
                 <TableHead className="w-[100px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -144,7 +143,7 @@ export function CallHistory() {
                       {call.initiated_at ? (
                         <div className="flex items-center gap-2">
                           <Clock className="h-4 w-4 text-muted-foreground" />
-                          {format(new Date(call.initiated_at), 'dd MMM yyyy, HH:mm', { locale: pl })}
+                          {format(new Date(call.initiated_at), 'MMM dd yyyy, HH:mm')}
                         </div>
                       ) : (
                         '-'
@@ -177,7 +176,7 @@ export function CallHistory() {
                       <Button variant="ghost" size="sm" asChild>
                         <Link to={`/calls/${call.id}`}>
                           <MessageSquare className="h-4 w-4 mr-1" />
-                          Szczegóły
+                          Details
                         </Link>
                       </Button>
                     </TableCell>
@@ -186,7 +185,7 @@ export function CallHistory() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                    Brak rozmów do wyświetlenia
+                    No calls to display
                   </TableCell>
                 </TableRow>
               )}

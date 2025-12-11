@@ -43,7 +43,7 @@ export function CallDialog({ open, onOpenChange, elderly }: CallDialogProps) {
 
     if (result.success) {
       setStatus('success')
-      toast.success(result.message || 'Rozmowa została zainicjowana')
+      toast.success(result.message || 'Call has been initiated')
       // Refresh calls data
       queryClient.invalidateQueries({ queryKey: ['calls'] })
       queryClient.invalidateQueries({ queryKey: ['elderly-calls', elderly.id] })
@@ -54,8 +54,8 @@ export function CallDialog({ open, onOpenChange, elderly }: CallDialogProps) {
       }, 2000)
     } else {
       setStatus('error')
-      setErrorMessage(result.error || 'Nie udało się zainicjować rozmowy')
-      toast.error(result.error || 'Nie udało się zainicjować rozmowy')
+      setErrorMessage(result.error || 'Failed to initiate call')
+      toast.error(result.error || 'Failed to initiate call')
     }
   }
 
@@ -73,9 +73,9 @@ export function CallDialog({ open, onOpenChange, elderly }: CallDialogProps) {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[400px]">
         <DialogHeader>
-          <DialogTitle>Zadzwoń do {displayName}</DialogTitle>
+          <DialogTitle>Call {displayName}</DialogTitle>
           <DialogDescription>
-            Zainicjuj rozmowę telefoniczną z {elderly.first_name} {elderly.last_name}
+            Initiate a phone call with {elderly.first_name} {elderly.last_name}
           </DialogDescription>
         </DialogHeader>
 
@@ -84,14 +84,14 @@ export function CallDialog({ open, onOpenChange, elderly }: CallDialogProps) {
             <Phone className="h-5 w-5 text-muted-foreground" />
             <div>
               <p className="font-medium">{elderly.phone_number}</p>
-              <p className="text-sm text-muted-foreground">Numer telefonu</p>
+              <p className="text-sm text-muted-foreground">Phone number</p>
             </div>
           </div>
 
           {status === 'success' && (
             <div className="flex items-center gap-2 p-4 bg-green-50 text-green-700 rounded-lg">
               <CheckCircle className="h-5 w-5" />
-              <p>Rozmowa została zainicjowana. Agent dzwoni...</p>
+              <p>Call has been initiated. Agent is calling...</p>
             </div>
           )}
 
@@ -104,7 +104,7 @@ export function CallDialog({ open, onOpenChange, elderly }: CallDialogProps) {
 
           <div className="flex justify-end gap-3">
             <Button variant="outline" onClick={handleClose}>
-              Anuluj
+              Cancel
             </Button>
             <Button
               onClick={handleInitiateCall}
@@ -113,17 +113,17 @@ export function CallDialog({ open, onOpenChange, elderly }: CallDialogProps) {
               {status === 'initiating' ? (
                 <>
                   <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Łączenie...
+                  Connecting...
                 </>
               ) : status === 'success' ? (
                 <>
                   <CheckCircle className="h-4 w-4 mr-2" />
-                  Zainicjowano
+                  Initiated
                 </>
               ) : (
                 <>
                   <Phone className="h-4 w-4 mr-2" />
-                  Zadzwoń
+                  Call
                 </>
               )}
             </Button>

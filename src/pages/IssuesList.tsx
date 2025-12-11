@@ -27,7 +27,6 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { useIssues, useUpdateIssue } from '@/hooks/useIssues'
 import { format } from 'date-fns'
-import { pl } from 'date-fns/locale'
 import { MoreHorizontal, CheckCircle, Clock, XCircle, Eye } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -49,13 +48,13 @@ function getPriorityColor(priority: string) {
 function getPriorityLabel(priority: string) {
   switch (priority) {
     case 'urgent':
-      return 'Pilne'
+      return 'Urgent'
     case 'high':
-      return 'Wysokie'
+      return 'High'
     case 'normal':
-      return 'Normalne'
+      return 'Normal'
     case 'low':
-      return 'Niskie'
+      return 'Low'
     default:
       return priority
   }
@@ -79,13 +78,13 @@ function getStatusColor(status: string) {
 function getStatusLabel(status: string) {
   switch (status) {
     case 'open':
-      return 'Otwarte'
+      return 'Open'
     case 'in_progress':
-      return 'W trakcie'
+      return 'In progress'
     case 'resolved':
-      return 'Rozwiązane'
+      return 'Resolved'
     case 'dismissed':
-      return 'Odrzucone'
+      return 'Dismissed'
     default:
       return status
   }
@@ -94,15 +93,15 @@ function getStatusLabel(status: string) {
 function getCategoryLabel(category: string) {
   switch (category) {
     case 'health':
-      return 'Zdrowie'
+      return 'Health'
     case 'loneliness':
-      return 'Samotność'
+      return 'Loneliness'
     case 'practical':
-      return 'Praktyczne'
+      return 'Practical'
     case 'emergency':
-      return 'Pilne'
+      return 'Emergency'
     case 'other':
-      return 'Inne'
+      return 'Other'
     default:
       return category
   }
@@ -128,17 +127,17 @@ export function IssuesList() {
           resolved_at: newStatus === 'resolved' ? new Date().toISOString() : null,
         },
       })
-      toast.success('Status zgłoszenia został zaktualizowany')
+      toast.success('Issue status has been updated')
     } catch {
-      toast.error('Nie udało się zaktualizować statusu')
+      toast.error('Failed to update status')
     }
   }
 
   return (
     <div className="flex flex-col">
       <Header
-        title="Zgłoszenia"
-        description="Problemy i prośby podopiecznych"
+        title="Issues"
+        description="Problems and requests from elderly people"
       />
 
       <div className="p-6">
@@ -149,24 +148,24 @@ export function IssuesList() {
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Wszystkie</SelectItem>
-              <SelectItem value="open">Otwarte</SelectItem>
-              <SelectItem value="in_progress">W trakcie</SelectItem>
-              <SelectItem value="resolved">Rozwiązane</SelectItem>
-              <SelectItem value="dismissed">Odrzucone</SelectItem>
+              <SelectItem value="all">All</SelectItem>
+              <SelectItem value="open">Open</SelectItem>
+              <SelectItem value="in_progress">In progress</SelectItem>
+              <SelectItem value="resolved">Resolved</SelectItem>
+              <SelectItem value="dismissed">Dismissed</SelectItem>
             </SelectContent>
           </Select>
 
           <Select value={priorityFilter} onValueChange={setPriorityFilter}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Priorytet" />
+              <SelectValue placeholder="Priority" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Wszystkie priorytety</SelectItem>
-              <SelectItem value="urgent">Pilne</SelectItem>
-              <SelectItem value="high">Wysokie</SelectItem>
-              <SelectItem value="normal">Normalne</SelectItem>
-              <SelectItem value="low">Niskie</SelectItem>
+              <SelectItem value="all">All priorities</SelectItem>
+              <SelectItem value="urgent">Urgent</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="normal">Normal</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -176,12 +175,12 @@ export function IssuesList() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Priorytet</TableHead>
-                <TableHead>Tytuł</TableHead>
-                <TableHead>Podopieczny</TableHead>
-                <TableHead>Kategoria</TableHead>
+                <TableHead>Priority</TableHead>
+                <TableHead>Title</TableHead>
+                <TableHead>Elderly person</TableHead>
+                <TableHead>Category</TableHead>
                 <TableHead>Status</TableHead>
-                <TableHead>Data</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead className="w-[80px]"></TableHead>
               </TableRow>
             </TableHeader>
@@ -235,7 +234,7 @@ export function IssuesList() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {format(new Date(issue.created_at), 'dd MMM yyyy', { locale: pl })}
+                      {format(new Date(issue.created_at), 'MMM dd yyyy')}
                     </TableCell>
                     <TableCell>
                       <DropdownMenu>
@@ -248,7 +247,7 @@ export function IssuesList() {
                           <DropdownMenuItem asChild>
                             <Link to={`/elderly/${issue.elderly_profile?.id}`}>
                               <Eye className="mr-2 h-4 w-4" />
-                              Zobacz profil
+                              View profile
                             </Link>
                           </DropdownMenuItem>
                           {issue.status !== 'in_progress' && (
@@ -256,7 +255,7 @@ export function IssuesList() {
                               onClick={() => handleStatusChange(issue.id, 'in_progress')}
                             >
                               <Clock className="mr-2 h-4 w-4" />
-                              Oznacz jako w trakcie
+                              Mark as in progress
                             </DropdownMenuItem>
                           )}
                           {issue.status !== 'resolved' && (
@@ -264,7 +263,7 @@ export function IssuesList() {
                               onClick={() => handleStatusChange(issue.id, 'resolved')}
                             >
                               <CheckCircle className="mr-2 h-4 w-4" />
-                              Oznacz jako rozwiązane
+                              Mark as resolved
                             </DropdownMenuItem>
                           )}
                           {issue.status !== 'dismissed' && (
@@ -272,7 +271,7 @@ export function IssuesList() {
                               onClick={() => handleStatusChange(issue.id, 'dismissed')}
                             >
                               <XCircle className="mr-2 h-4 w-4" />
-                              Odrzuć
+                              Dismiss
                             </DropdownMenuItem>
                           )}
                         </DropdownMenuContent>
@@ -283,7 +282,7 @@ export function IssuesList() {
               ) : (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                    Brak zgłoszeń do wyświetlenia
+                    No issues to display
                   </TableCell>
                 </TableRow>
               )}

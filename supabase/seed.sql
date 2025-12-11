@@ -7,32 +7,32 @@ INSERT INTO elderly_profiles (
   emergency_contact_name, emergency_contact_phone, emergency_contact_relationship,
   medical_notes, care_notes
 ) VALUES
-  ('Maria', 'Kowalska', 'Pani Maria', '+48123456789', '1945-03-15', '09:00', true,
-   'Warszawa', 'ul. Kwiatowa 15/3',
-   'Anna Kowalska', '+48111222333', 'córka',
-   'Cukrzyca typu 2, nadciśnienie', 'Lubi rozmawiać o wnukach'),
+  ('Mary', 'Smith', 'Mrs. Mary', '+12025551234', '1945-03-15', '09:00', true,
+   'New York', '123 Oak Street, Apt 3B',
+   'Sarah Smith', '+12025552345', 'daughter',
+   'Type 2 diabetes, hypertension', 'Likes talking about grandchildren'),
 
-  ('Jan', 'Nowak', NULL, '+48987654321', '1940-07-22', '10:30', true,
-   'Kraków', 'ul. Słoneczna 8',
-   'Piotr Nowak', '+48444555666', 'syn',
-   'Problemy z sercem, przyjmuje leki na rozrzedzenie krwi', 'Były nauczyciel, lubi rozmawiać o historii'),
+  ('John', 'Davis', NULL, '+12025553456', '1940-07-22', '10:30', true,
+   'Chicago', '456 Maple Avenue',
+   'Peter Davis', '+12025554567', 'son',
+   'Heart problems, takes blood thinning medication', 'Retired teacher, enjoys discussing history'),
 
-  ('Anna', 'Wiśniewska', 'Babcia Ania', '+48555666777', '1938-11-08', '11:00', true,
-   'Gdańsk', 'ul. Morska 42/10',
-   'Katarzyna Wiśniewska', '+48777888999', 'córka',
-   'Astma, alergie sezonowe', 'Samotna, potrzebuje więcej kontaktu społecznego'),
+  ('Anna', 'Wilson', 'Grandma Anna', '+12025555678', '1938-11-08', '11:00', true,
+   'Los Angeles', '789 Palm Drive, Unit 10',
+   'Katherine Wilson', '+12025556789', 'daughter',
+   'Asthma, seasonal allergies', 'Lives alone, needs more social contact'),
 
-  ('Stanisław', 'Wójcik', 'Pan Staszek', '+48111222333', '1942-05-30', '09:30', true,
-   'Poznań', 'ul. Parkowa 5',
-   'Marek Wójcik', '+48222333444', 'syn',
-   NULL, 'Były wojskowy, lubi poranne rozmowy'),
+  ('Stanley', 'Brown', 'Mr. Stan', '+12025557890', '1942-05-30', '09:30', true,
+   'Houston', '321 Pine Road',
+   'Mark Brown', '+12025558901', 'son',
+   NULL, 'Retired military, likes morning conversations'),
 
-  ('Helena', 'Kamińska', NULL, '+48444555666', '1935-09-12', '10:00', false,
-   'Wrocław', 'ul. Ogrodowa 22',
-   'Ewa Kamińska', '+48333444555', 'córka',
-   'Demencja w początkowym stadium', 'Obecnie w szpitalu - przerwa w rozmowach');
+  ('Helen', 'Miller', NULL, '+12025559012', '1935-09-12', '10:00', false,
+   'Phoenix', '654 Elm Street',
+   'Eva Miller', '+12025550123', 'daughter',
+   'Early-stage dementia', 'Currently in hospital - break from calls');
 
--- Insert some sample calls for Maria Kowalska
+-- Insert some sample calls for Mary Smith
 INSERT INTO calls (elderly_profile_id, conversation_id, status, initiated_at, started_at, ended_at, duration_secs, call_type)
 SELECT
   id,
@@ -43,7 +43,7 @@ SELECT
   NOW() - INTERVAL '1 day' + INTERVAL '5 minutes 30 seconds',
   300,
   'scheduled'
-FROM elderly_profiles WHERE phone_number = '+48123456789';
+FROM elderly_profiles WHERE phone_number = '+12025551234';
 
 INSERT INTO calls (elderly_profile_id, conversation_id, status, initiated_at, started_at, ended_at, duration_secs, call_type)
 SELECT
@@ -55,22 +55,22 @@ SELECT
   NOW() - INTERVAL '2 days' + INTERVAL '7 minutes',
   375,
   'scheduled'
-FROM elderly_profiles WHERE phone_number = '+48123456789';
+FROM elderly_profiles WHERE phone_number = '+12025551234';
 
 -- Insert call summary for the most recent call
 INSERT INTO call_summaries (call_id, transcript_summary, call_successful, mood_assessment, health_mentions, needs_mentioned, follow_up_required, urgency_level)
 SELECT
   c.id,
-  'Pani Maria była w dobrym nastroju. Opowiadała o wizycie wnuków w weekend. Wspomniała, że czuje się trochę zmęczona, ale ogólnie dobrze. Przypomniała o wizytę u lekarza w przyszłym tygodniu.',
+  'Mrs. Mary was in a good mood. She talked about her grandchildren visiting over the weekend. She mentioned feeling a bit tired but otherwise fine. She reminded about a doctor appointment next week.',
   true,
   'positive',
-  '["zmęczenie", "wizyta u lekarza"]'::jsonb,
-  '["przypomnienie o wizycie lekarskiej"]'::jsonb,
+  '["fatigue", "doctor visit"]'::jsonb,
+  '["reminder about doctor appointment"]'::jsonb,
   false,
   'normal'
 FROM calls c
 JOIN elderly_profiles ep ON c.elderly_profile_id = ep.id
-WHERE ep.phone_number = '+48123456789'
+WHERE ep.phone_number = '+12025551234'
 ORDER BY c.initiated_at DESC
 LIMIT 1;
 
@@ -79,19 +79,19 @@ INSERT INTO issues (elderly_profile_id, call_id, title, description, category, s
 SELECT
   ep.id,
   c.id,
-  'Wizyta u lekarza',
-  'Pani Maria potrzebuje przypomnienia o wizycie u lekarza w przyszłym tygodniu (kardiolog)',
+  'Doctor appointment',
+  'Mrs. Mary needs a reminder about her doctor appointment next week (cardiologist)',
   'health',
   'open',
   'normal',
   'auto'
 FROM elderly_profiles ep
 JOIN calls c ON c.elderly_profile_id = ep.id
-WHERE ep.phone_number = '+48123456789'
+WHERE ep.phone_number = '+12025551234'
 ORDER BY c.initiated_at DESC
 LIMIT 1;
 
--- Insert a call for Jan Nowak
+-- Insert a call for John Davis
 INSERT INTO calls (elderly_profile_id, conversation_id, status, initiated_at, started_at, ended_at, duration_secs, call_type)
 SELECT
   id,
@@ -102,60 +102,60 @@ SELECT
   NOW() - INTERVAL '1 day' + INTERVAL '8 minutes 20 seconds',
   480,
   'scheduled'
-FROM elderly_profiles WHERE phone_number = '+48987654321';
+FROM elderly_profiles WHERE phone_number = '+12025553456';
 
--- Insert call summary for Jan's call
+-- Insert call summary for John's call
 INSERT INTO call_summaries (call_id, transcript_summary, call_successful, mood_assessment, health_mentions, needs_mentioned, follow_up_required, urgency_level)
 SELECT
   c.id,
-  'Pan Jan był dziś nieco przygnębiony. Wspomniał, że brakuje mu kontaktu z rodziną. Skarżył się na ból w klatce piersiowej, który pojawia się przy wysiłku. Zalecono kontakt z rodziną.',
+  'Mr. John was somewhat down today. He mentioned missing contact with his family. He complained about chest pain that occurs with exertion. Family contact was recommended.',
   true,
   'concerned',
-  '["ból w klatce piersiowej", "duszności przy wysiłku"]'::jsonb,
-  '["kontakt z rodziną", "wizyta lekarska"]'::jsonb,
+  '["chest pain", "shortness of breath with exertion"]'::jsonb,
+  '["family contact", "doctor visit"]'::jsonb,
   true,
   'high'
 FROM calls c
 JOIN elderly_profiles ep ON c.elderly_profile_id = ep.id
-WHERE ep.phone_number = '+48987654321'
+WHERE ep.phone_number = '+12025553456'
 ORDER BY c.initiated_at DESC
 LIMIT 1;
 
--- Insert urgent issue for Jan
+-- Insert urgent issue for John
 INSERT INTO issues (elderly_profile_id, call_id, title, description, category, status, priority, source)
 SELECT
   ep.id,
   c.id,
-  'Ból w klatce piersiowej',
-  'Pan Jan zgłosił ból w klatce piersiowej przy wysiłku. Wymaga pilnej konsultacji kardiologicznej.',
+  'Chest pain',
+  'Mr. John reported chest pain with exertion. Requires urgent cardiology consultation.',
   'health',
   'open',
   'high',
   'auto'
 FROM elderly_profiles ep
 JOIN calls c ON c.elderly_profile_id = ep.id
-WHERE ep.phone_number = '+48987654321'
+WHERE ep.phone_number = '+12025553456'
 ORDER BY c.initiated_at DESC
 LIMIT 1;
 
--- Insert loneliness issue for Jan
+-- Insert loneliness issue for John
 INSERT INTO issues (elderly_profile_id, call_id, title, description, category, status, priority, source)
 SELECT
   ep.id,
   c.id,
-  'Samotność - brak kontaktu z rodziną',
-  'Pan Jan wspomniał o braku kontaktu z rodziną i uczuciu osamotnienia. Zalecany kontakt z synem.',
+  'Loneliness - lack of family contact',
+  'Mr. John mentioned lack of family contact and feeling lonely. Contact with son recommended.',
   'loneliness',
   'open',
   'normal',
   'auto'
 FROM elderly_profiles ep
 JOIN calls c ON c.elderly_profile_id = ep.id
-WHERE ep.phone_number = '+48987654321'
+WHERE ep.phone_number = '+12025553456'
 ORDER BY c.initiated_at DESC
 LIMIT 1;
 
--- Insert a missed call for Anna Wiśniewska
+-- Insert a missed call for Anna Wilson
 INSERT INTO calls (elderly_profile_id, conversation_id, status, initiated_at, call_type)
 SELECT
   id,
@@ -163,4 +163,4 @@ SELECT
   'missed',
   NOW() - INTERVAL '1 day',
   'scheduled'
-FROM elderly_profiles WHERE phone_number = '+48555666777';
+FROM elderly_profiles WHERE phone_number = '+12025555678';

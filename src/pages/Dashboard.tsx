@@ -7,7 +7,6 @@ import { useElderlyProfiles } from '@/hooks/useElderlyProfiles'
 import { useRecentCalls } from '@/hooks/useCalls'
 import { useOpenIssues } from '@/hooks/useIssues'
 import { format } from 'date-fns'
-import { pl } from 'date-fns/locale'
 import { Phone, AlertCircle, Clock, Users } from 'lucide-react'
 
 function getPriorityColor(priority: string) {
@@ -71,7 +70,7 @@ export function Dashboard() {
     <div className="flex flex-col">
       <Header
         title="Dashboard"
-        description="Przegląd systemu opieki"
+        description="Care system overview"
       />
 
       <div className="p-6 space-y-6">
@@ -79,7 +78,7 @@ export function Dashboard() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Aktywni podopieczni</CardTitle>
+              <CardTitle className="text-sm font-medium">Active elderly</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -93,7 +92,7 @@ export function Dashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Rozmowy dziś</CardTitle>
+              <CardTitle className="text-sm font-medium">Calls today</CardTitle>
               <Phone className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -107,7 +106,7 @@ export function Dashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Otwarte zgłoszenia</CardTitle>
+              <CardTitle className="text-sm font-medium">Open issues</CardTitle>
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -121,7 +120,7 @@ export function Dashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Pilne sprawy</CardTitle>
+              <CardTitle className="text-sm font-medium">Urgent matters</CardTitle>
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -139,9 +138,9 @@ export function Dashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                Ostatnie rozmowy
+                Recent calls
                 <Link to="/calls" className="text-sm font-normal text-primary hover:underline">
-                  Zobacz wszystkie
+                  View all
                 </Link>
               </CardTitle>
             </CardHeader>
@@ -168,9 +167,9 @@ export function Dashboard() {
                             {call.elderly_profile?.first_name} {call.elderly_profile?.last_name}
                           </Link>
                           <Badge className={getStatusColor(call.status)} variant="secondary">
-                            {call.status === 'completed' ? 'Zakończona' :
-                             call.status === 'missed' ? 'Nieodebrana' :
-                             call.status === 'failed' ? 'Błąd' : call.status}
+                            {call.status === 'completed' ? 'Completed' :
+                             call.status === 'missed' ? 'Missed' :
+                             call.status === 'failed' ? 'Failed' : call.status}
                           </Badge>
                         </div>
                         {call.call_summary?.transcript_summary && (
@@ -180,7 +179,7 @@ export function Dashboard() {
                         )}
                         {call.initiated_at && (
                           <p className="text-xs text-muted-foreground mt-1">
-                            {format(new Date(call.initiated_at), 'dd MMM, HH:mm', { locale: pl })}
+                            {format(new Date(call.initiated_at), 'MMM dd, HH:mm')}
                           </p>
                         )}
                       </div>
@@ -189,7 +188,7 @@ export function Dashboard() {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  Brak ostatnich rozmów
+                  No recent calls
                 </p>
               )}
             </CardContent>
@@ -199,9 +198,9 @@ export function Dashboard() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                Otwarte zgłoszenia
+                Open issues
                 <Link to="/issues" className="text-sm font-normal text-primary hover:underline">
-                  Zobacz wszystkie
+                  View all
                 </Link>
               </CardTitle>
             </CardHeader>
@@ -222,9 +221,9 @@ export function Dashboard() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <Badge className={getPriorityColor(issue.priority)}>
-                            {issue.priority === 'urgent' ? 'Pilne' :
-                             issue.priority === 'high' ? 'Wysokie' :
-                             issue.priority === 'normal' ? 'Normalne' : 'Niskie'}
+                            {issue.priority === 'urgent' ? 'Urgent' :
+                             issue.priority === 'high' ? 'High' :
+                             issue.priority === 'normal' ? 'Normal' : 'Low'}
                           </Badge>
                           <span className="font-medium">{issue.title}</span>
                         </div>
@@ -236,7 +235,7 @@ export function Dashboard() {
                             {issue.elderly_profile?.first_name} {issue.elderly_profile?.last_name}
                           </Link>
                           <span className="text-xs text-muted-foreground">
-                            {format(new Date(issue.created_at), 'dd MMM', { locale: pl })}
+                            {format(new Date(issue.created_at), 'MMM dd')}
                           </span>
                         </div>
                       </div>
@@ -245,7 +244,7 @@ export function Dashboard() {
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  Brak otwartych zgłoszeń
+                  No open issues
                 </p>
               )}
             </CardContent>
