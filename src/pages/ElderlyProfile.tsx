@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { ElderlyForm } from '@/components/elderly/ElderlyForm'
+import { CallDialog } from '@/components/calls/CallDialog'
 import { useElderlyProfile, useUpdateElderlyProfile } from '@/hooks/useElderlyProfiles'
 import { useElderlyCallHistory } from '@/hooks/useCalls'
 import { useElderlyIssues } from '@/hooks/useIssues'
@@ -16,6 +17,7 @@ import { format, differenceInYears } from 'date-fns'
 import { pl } from 'date-fns/locale'
 import {
   Phone,
+  PhoneCall,
   Mail,
   MapPin,
   Clock,
@@ -60,6 +62,7 @@ export function ElderlyProfile() {
   const { id } = useParams<{ id: string }>()
   const [searchParams, setSearchParams] = useSearchParams()
   const [editOpen, setEditOpen] = useState(searchParams.get('edit') === 'true')
+  const [callOpen, setCallOpen] = useState(false)
 
   const { data: profile, isLoading: profileLoading } = useElderlyProfile(id!)
   const { data: calls, isLoading: callsLoading } = useElderlyCallHistory(id!)
@@ -178,10 +181,16 @@ export function ElderlyProfile() {
                   </div>
                 </div>
               </div>
-              <Button onClick={() => setEditOpen(true)} variant="outline" size="sm">
-                <Pencil className="h-4 w-4 mr-2" />
-                Edytuj
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={() => setCallOpen(true)} size="sm">
+                  <PhoneCall className="h-4 w-4 mr-2" />
+                  Zadzwoń
+                </Button>
+                <Button onClick={() => setEditOpen(true)} variant="outline" size="sm">
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edytuj
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>
@@ -383,6 +392,12 @@ export function ElderlyProfile() {
         onSubmit={handleUpdate}
         initialData={profile}
         isLoading={updateMutation.isPending}
+      />
+
+      <CallDialog
+        open={callOpen}
+        onOpenChange={setCallOpen}
+        elderly={profile}
       />
     </div>
   )
