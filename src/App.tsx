@@ -29,7 +29,7 @@ function App() {
             <Route path="/elderly/:id" element={<ElderlyProfile />} />
             <Route path="/calls" element={<CallHistory />} />
             <Route path="/calls/:id" element={<CallDetail />} />
-            <Route path="/issues" element={<IssuesList />} />
+            {/* <Route path="/issues" element={<IssuesList />} /> */}
           </Route>
         </Routes>
       </BrowserRouter>

@@ -130,3 +130,24 @@ export function useElderlyCallHistory(elderlyId: string) {
     enabled: !!elderlyId,
   })
 }
+
+export function useUrgentCalls(limit: number = 10) {
+  return useQuery({
+    queryKey: callKeys.list({ urgent: true, limit }),
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('calls')
+        .select(`
+          *,
+          elderly_profile:elderly_profiles(id, first_name, last_name, phone_number),
+          call_summary:call_summaries!inner(transcript_summary, mood_assessment, urgency_level, follow_up_required)
+        `)
+        .in('call_summary.urgency_level', ['high', 'urgent'])
+        .order('initiated_at', { ascending: false })
+        .limit(limit)
+
+      if (error) throw error
+      return data as CallWithDetails[]
+    },
+  })
+}

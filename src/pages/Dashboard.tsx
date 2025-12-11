@@ -4,8 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useElderlyProfiles } from '@/hooks/useElderlyProfiles'
-import { useRecentCalls } from '@/hooks/useCalls'
-import { useOpenIssues } from '@/hooks/useIssues'
+import { useRecentCalls, useUrgentCalls } from '@/hooks/useCalls'
 import { format } from 'date-fns'
 import { Phone, AlertCircle, Clock, Users } from 'lucide-react'
 
@@ -59,12 +58,12 @@ function getStatusColor(status: string) {
 export function Dashboard() {
   const { data: elderly, isLoading: elderlyLoading } = useElderlyProfiles({ activeOnly: true })
   const { data: recentCalls, isLoading: callsLoading } = useRecentCalls(5)
-  const { data: openIssues, isLoading: issuesLoading } = useOpenIssues(5)
+  const { data: urgentCalls, isLoading: urgentCallsLoading } = useUrgentCalls(5)
 
   const activeCount = elderly?.length ?? 0
   const completedToday = recentCalls?.filter(c => c.status === 'completed').length ?? 0
-  const openIssuesCount = openIssues?.length ?? 0
-  const urgentIssues = openIssues?.filter(i => i.priority === 'urgent' || i.priority === 'high').length ?? 0
+  const urgentCallsCount = urgentCalls?.length ?? 0
+  const criticalCalls = urgentCalls?.filter(c => c.call_summary?.urgency_level === 'urgent').length ?? 0
 
   return (
     <div className="flex flex-col">
@@ -106,14 +105,14 @@ export function Dashboard() {
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">Open issues</CardTitle>
+              <CardTitle className="text-sm font-medium">Needs attention</CardTitle>
               <AlertCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {issuesLoading ? (
+              {urgentCallsLoading ? (
                 <Skeleton className="h-8 w-16" />
               ) : (
-                <div className="text-2xl font-bold">{openIssuesCount}</div>
+                <div className="text-2xl font-bold">{urgentCallsCount}</div>
               )}
             </CardContent>
           </Card>
@@ -124,10 +123,10 @@ export function Dashboard() {
               <Clock className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              {issuesLoading ? (
+              {urgentCallsLoading ? (
                 <Skeleton className="h-8 w-16" />
               ) : (
-                <div className="text-2xl font-bold text-red-600">{urgentIssues}</div>
+                <div className="text-2xl font-bold text-red-600">{criticalCalls}</div>
               )}
             </CardContent>
           </Card>
@@ -194,57 +193,59 @@ export function Dashboard() {
             </CardContent>
           </Card>
 
-          {/* Open Issues */}
+          {/* Calls Needing Attention */}
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
-                Open issues
-                <Link to="/issues" className="text-sm font-normal text-primary hover:underline">
+                Needs attention
+                <Link to="/calls" className="text-sm font-normal text-primary hover:underline">
                   View all
                 </Link>
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {issuesLoading ? (
+              {urgentCallsLoading ? (
                 <div className="space-y-3">
                   {[...Array(3)].map((_, i) => (
                     <Skeleton key={i} className="h-16 w-full" />
                   ))}
                 </div>
-              ) : openIssues && openIssues.length > 0 ? (
+              ) : urgentCalls && urgentCalls.length > 0 ? (
                 <div className="space-y-3">
-                  {openIssues.map((issue) => (
+                  {urgentCalls.map((call) => (
                     <div
-                      key={issue.id}
+                      key={call.id}
                       className="flex items-center justify-between p-3 rounded-lg border"
                     >
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
-                          <Badge className={getPriorityColor(issue.priority)}>
-                            {issue.priority === 'urgent' ? 'Urgent' :
-                             issue.priority === 'high' ? 'High' :
-                             issue.priority === 'normal' ? 'Normal' : 'Low'}
+                          <Badge className={getPriorityColor(call.call_summary?.urgency_level ?? 'normal')}>
+                            {call.call_summary?.urgency_level === 'urgent' ? 'Urgent' : 'High'}
                           </Badge>
-                          <span className="font-medium">{issue.title}</span>
-                        </div>
-                        <div className="flex items-center gap-2 mt-1">
                           <Link
-                            to={`/elderly/${issue.elderly_profile?.id}`}
-                            className="text-sm text-muted-foreground hover:underline"
+                            to={`/elderly/${call.elderly_profile?.id}`}
+                            className="font-medium hover:underline"
                           >
-                            {issue.elderly_profile?.first_name} {issue.elderly_profile?.last_name}
+                            {call.elderly_profile?.first_name} {call.elderly_profile?.last_name}
                           </Link>
-                          <span className="text-xs text-muted-foreground">
-                            {format(new Date(issue.created_at), 'MMM dd')}
-                          </span>
                         </div>
+                        {call.call_summary?.transcript_summary && (
+                          <p className={`text-sm mt-1 line-clamp-2 ${getMoodColor(call.call_summary.mood_assessment)}`}>
+                            {call.call_summary.transcript_summary}
+                          </p>
+                        )}
+                        {call.initiated_at && (
+                          <p className="text-xs text-muted-foreground mt-1">
+                            {format(new Date(call.initiated_at), 'MMM dd, HH:mm')}
+                          </p>
+                        )}
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
                 <p className="text-sm text-muted-foreground text-center py-4">
-                  No open issues
+                  No calls needing attention
                 </p>
               )}
             </CardContent>

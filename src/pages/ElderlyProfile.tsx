@@ -237,10 +237,6 @@ export function ElderlyProfile() {
               <Phone className="h-4 w-4 mr-2" />
               Calls ({calls?.length ?? 0})
             </TabsTrigger>
-            <TabsTrigger value="issues">
-              <AlertCircle className="h-4 w-4 mr-2" />
-              Issues ({openIssuesCount})
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="info" className="mt-4 space-y-4">
@@ -326,56 +322,6 @@ export function ElderlyProfile() {
             ) : (
               <p className="text-muted-foreground text-center py-8">
                 No call history
-              </p>
-            )}
-          </TabsContent>
-
-          <TabsContent value="issues" className="mt-4">
-            {issuesLoading ? (
-              <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <Skeleton key={i} className="h-20 w-full" />
-                ))}
-              </div>
-            ) : issues && issues.length > 0 ? (
-              <div className="space-y-3">
-                {issues.map((issue) => (
-                  <Card key={issue.id}>
-                    <CardContent className="py-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <Badge className={getPriorityColor(issue.priority)}>
-                              {issue.priority === 'urgent' ? 'Urgent' :
-                               issue.priority === 'high' ? 'High' :
-                               issue.priority === 'normal' ? 'Normal' : 'Low'}
-                            </Badge>
-                            <Badge variant="outline">
-                              {issue.status === 'open' ? 'Open' :
-                               issue.status === 'in_progress' ? 'In progress' :
-                               issue.status === 'resolved' ? 'Resolved' : 'Dismissed'}
-                            </Badge>
-                          </div>
-                          <p className="font-medium mt-2">{issue.title}</p>
-                          {issue.description && (
-                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                              {issue.description}
-                            </p>
-                          )}
-                        </div>
-                        <div className="text-right">
-                          <p className="text-sm text-muted-foreground">
-                            {format(new Date(issue.created_at), 'MMM dd yyyy')}
-                          </p>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : (
-              <p className="text-muted-foreground text-center py-8">
-                No issues
               </p>
             )}
           </TabsContent>
