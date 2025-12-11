@@ -1,0 +1,199 @@
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { Header } from '@/components/layout'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { Button } from '@/components/ui/button'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
+import { useCalls } from '@/hooks/useCalls'
+import { format } from 'date-fns'
+import { pl } from 'date-fns/locale'
+import { Clock, MessageSquare } from 'lucide-react'
+
+function getStatusColor(status: string) {
+  switch (status) {
+    case 'completed':
+      return 'bg-green-100 text-green-800'
+    case 'missed':
+      return 'bg-red-100 text-red-800'
+    case 'failed':
+      return 'bg-red-100 text-red-800'
+    case 'in_progress':
+      return 'bg-blue-100 text-blue-800'
+    case 'scheduled':
+      return 'bg-gray-100 text-gray-800'
+    default:
+      return 'bg-gray-100 text-gray-800'
+  }
+}
+
+function getStatusLabel(status: string) {
+  switch (status) {
+    case 'completed':
+      return 'Zakończona'
+    case 'missed':
+      return 'Nieodebrana'
+    case 'failed':
+      return 'Błąd'
+    case 'in_progress':
+      return 'W trakcie'
+    case 'scheduled':
+      return 'Zaplanowana'
+    default:
+      return status
+  }
+}
+
+function getMoodColor(mood: string | null) {
+  switch (mood) {
+    case 'positive':
+      return 'text-green-600'
+    case 'neutral':
+      return 'text-gray-600'
+    case 'concerned':
+      return 'text-orange-600'
+    case 'urgent':
+      return 'text-red-600'
+    default:
+      return 'text-gray-600'
+  }
+}
+
+export function CallHistory() {
+  const [statusFilter, setStatusFilter] = useState<string>('all')
+
+  const { data: calls, isLoading } = useCalls({
+    status: statusFilter !== 'all' ? statusFilter : undefined,
+  })
+
+  return (
+    <div className="flex flex-col">
+      <Header
+        title="Historia rozmów"
+        description="Wszystkie rozmowy z podopiecznymi"
+      />
+
+      <div className="p-6">
+        {/* Filters */}
+        <div className="flex items-center gap-4 mb-6">
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Wszystkie</SelectItem>
+              <SelectItem value="completed">Zakończone</SelectItem>
+              <SelectItem value="missed">Nieodebrane</SelectItem>
+              <SelectItem value="failed">Błędy</SelectItem>
+              <SelectItem value="scheduled">Zaplanowane</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Table */}
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Podopieczny</TableHead>
+                <TableHead>Data i czas</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Czas trwania</TableHead>
+                <TableHead>Podsumowanie</TableHead>
+                <TableHead className="w-[100px]"></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {isLoading ? (
+                [...Array(5)].map((_, i) => (
+                  <TableRow key={i}>
+                    <TableCell><Skeleton className="h-5 w-32" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-36" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-24" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-20" /></TableCell>
+                    <TableCell><Skeleton className="h-5 w-full" /></TableCell>
+                    <TableCell><Skeleton className="h-8 w-20" /></TableCell>
+                  </TableRow>
+                ))
+              ) : calls && calls.length > 0 ? (
+                calls.map((call) => (
+                  <TableRow key={call.id}>
+                    <TableCell>
+                      <Link
+                        to={`/elderly/${call.elderly_profile?.id}`}
+                        className="font-medium hover:underline"
+                      >
+                        {call.elderly_profile?.first_name} {call.elderly_profile?.last_name}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      {call.initiated_at ? (
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          {format(new Date(call.initiated_at), 'dd MMM yyyy, HH:mm', { locale: pl })}
+                        </div>
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(call.status)} variant="secondary">
+                        {getStatusLabel(call.status)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {call.duration_secs ? (
+                        <span className="text-sm">
+                          {Math.floor(call.duration_secs / 60)}:{String(call.duration_secs % 60).padStart(2, '0')}
+                        </span>
+                      ) : (
+                        '-'
+                      )}
+                    </TableCell>
+                    <TableCell className="max-w-xs">
+                      {call.call_summary?.transcript_summary ? (
+                        <p className={`text-sm line-clamp-2 ${getMoodColor(call.call_summary.mood_assessment)}`}>
+                          {call.call_summary.transcript_summary}
+                        </p>
+                      ) : (
+                        <span className="text-sm text-muted-foreground">-</span>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link to={`/calls/${call.id}`}>
+                          <MessageSquare className="h-4 w-4 mr-1" />
+                          Szczegóły
+                        </Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                    Brak rozmów do wyświetlenia
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </div>
+  )
+}
