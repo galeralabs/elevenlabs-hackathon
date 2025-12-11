@@ -14,6 +14,8 @@ function getPriorityColor(priority: string) {
       return 'bg-red-500 text-white'
     case 'high':
       return 'bg-orange-500 text-white'
+    case 'moderate':
+      return 'bg-yellow-500 text-white'
     case 'normal':
       return 'bg-blue-500 text-white'
     case 'low':
@@ -198,7 +200,7 @@ export function Dashboard() {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 Needs attention
-                <Link to="/calls" className="text-sm font-normal text-primary hover:underline">
+                <Link to="/actions" className="text-sm font-normal text-primary hover:underline">
                   View all
                 </Link>
               </CardTitle>
@@ -220,7 +222,8 @@ export function Dashboard() {
                       <div className="flex-1">
                         <div className="flex items-center gap-2">
                           <Badge className={getPriorityColor(call.call_summary?.urgency_level ?? 'normal')}>
-                            {call.call_summary?.urgency_level === 'urgent' ? 'Urgent' : 'High'}
+                            {call.call_summary?.urgency_level === 'urgent' ? 'Urgent' :
+                             call.call_summary?.urgency_level === 'high' ? 'High' : 'Moderate'}
                           </Badge>
                           <Link
                             to={`/elderly/${call.elderly_profile?.id}`}

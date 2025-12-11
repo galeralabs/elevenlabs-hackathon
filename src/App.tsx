@@ -8,6 +8,7 @@ import { ElderlyProfile } from '@/pages/ElderlyProfile'
 import { CallHistory } from '@/pages/CallHistory'
 import { CallDetail } from '@/pages/CallDetail'
 import { IssuesList } from '@/pages/IssuesList'
+import { Actions } from '@/pages/Actions'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/elderly/:id" element={<ElderlyProfile />} />
             <Route path="/calls" element={<CallHistory />} />
             <Route path="/calls/:id" element={<CallDetail />} />
+            <Route path="/actions" element={<Actions />} />
             {/* <Route path="/issues" element={<IssuesList />} /> */}
           </Route>
         </Routes>
