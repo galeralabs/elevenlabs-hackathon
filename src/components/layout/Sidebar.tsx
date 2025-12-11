@@ -2,16 +2,16 @@ import { NavLink } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import {
   LayoutDashboard,
-  Users,
+  UserRound,
   Phone,
   AlertCircle,
-  Coffee,
+  SmilePlus,
 } from 'lucide-react'
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Actions', href: '/actions', icon: AlertCircle },
-  { name: 'Elderly', href: '/elderly', icon: Users },
+  { name: 'Elderly', href: '/elderly', icon: UserRound },
   { name: 'Calls', href: '/calls', icon: Phone },
 ]
 
@@ -19,8 +19,8 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-sidebar-background">
       <div className="flex h-16 items-center gap-2 border-b px-6">
-        <Coffee className="h-6 w-6 text-primary" />
-        <span className="text-xl font-semibold">TeaTime</span>
+        <SmilePlus className="h-6 w-6 text-primary" />
+        <span className="text-xl font-semibold">Teatime</span>
       </div>
 
       <nav className="flex-1 space-y-1 p-4">
